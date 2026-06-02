@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Midwest Medical Coding Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1f3a;--navy2:#122848;--blue:#1458a8;--blue2:#1d6fd4;--blue3:#3b8ee8;
+  --cyan:#00c2e0;--cyan2:#00e5ff;--teal:#00897b;
+  --green:#00b96b;--greenbg:rgba(0,185,107,.10);
+  --red:#e8415a;--redbg:rgba(232,65,90,.10);
+  --amber:#f59e0b;--amberbg:rgba(245,158,11,.10);
+  --purple:#8b5cf6;--purplebg:rgba(139,92,246,.10);
+  --border:rgba(255,255,255,.08);--border2:rgba(52,130,255,.20);
+  --text:#e8f0fe;--muted:#7fa3cc;--dim:#4a6f94;
+  --bg:#07111f;--card:rgba(15,28,50,.85);--card2:rgba(18,32,56,.9);
+  --glow:0 0 40px rgba(0,194,224,.12);
+  --shadow:0 8px 32px rgba(0,0,0,.45);
+  --rad:14px;--rad2:10px
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+}
+
+/* ── Animated background ── */
+.bg-canvas{
+  position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+}
+.bg-orb{
+  position:absolute;border-radius:50%;filter:blur(80px);opacity:.18;animation:orb-drift 18s ease-in-out infinite alternate;
+}
+.bg-orb:nth-child(1){width:600px;height:600px;background:radial-gradient(circle,#1458a8,transparent);top:-10%;left:-10%;animation-delay:0s;}
+.bg-orb:nth-child(2){width:500px;height:500px;background:radial-gradient(circle,#00c2e0,transparent);top:30%;right:-15%;animation-delay:-6s;}
+.bg-orb:nth-child(3){width:400px;height:400px;background:radial-gradient(circle,#8b5cf6,transparent);bottom:-10%;left:25%;animation-delay:-12s;}
+.grid-overlay{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(20,88,168,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(20,88,168,.06) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+@keyframes orb-drift{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(60px,40px) scale(1.15);}
+}
+
+/* ── App shell ── */
+.app{max-width:1160px;margin:0 auto;padding:36px 20px 80px;position:relative;z-index:1;}
+
+/* ── Header ── */
+.header{text-align:center;margin-bottom:44px;padding:0 10px;}
+.header-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(0,194,224,.15),rgba(20,88,168,.2));
+  border:1px solid rgba(0,194,224,.3);
+  color:var(--cyan);font-size:11px;font-weight:700;letter-spacing:1.8px;
+  padding:6px 20px;border-radius:30px;margin-bottom:18px;text-transform:uppercase;
+  animation:pill-glow 3s ease-in-out infinite alternate;
+}
+@keyframes pill-glow{
+  from{box-shadow:0 0 10px rgba(0,194,224,.2);}
+  to{box-shadow:0 0 22px rgba(0,194,224,.45),0 0 40px rgba(0,194,224,.1);}
+}
+.header-pill .pulse-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--cyan);
+  animation:dot-pulse 1.5s ease-in-out infinite;
+}
+@keyframes dot-pulse{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.4;transform:scale(.7);}
+}
+.header h1{
+  font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-.5px;
+  background:linear-gradient(135deg,#e8f0fe 0%,var(--cyan2) 45%,var(--blue3) 80%,#a78bfa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;line-height:1.1;
+  animation:title-shimmer 4s linear infinite;
+  background-size:200% auto;
+}
+@keyframes title-shimmer{
+  from{background-position:0% center;}
+  to{background-position:200% center;}
+}
+.header p{font-size:14px;color:var(--muted);letter-spacing:.2px;line-height:1.7;}
+.header p strong{color:var(--cyan);font-weight:600;}
+.header-line{
+  width:80px;height:2px;margin:16px auto 0;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  animation:line-pulse 2s ease-in-out infinite;
+}
+@keyframes line-pulse{
+  0%,100%{width:60px;opacity:.5;}
+  50%{width:120px;opacity:1;}
+}
+
+/* ── Grid ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+
+/* ── Cards ── */
+.card{
+  background:var(--card);
+  border-radius:var(--rad);border:1px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;
+  transition:transform .25s ease,box-shadow .25s ease;
+  backdrop-filter:blur(12px);
+}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow),var(--glow);}
+
+.card-header{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;font-size:11px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);position:relative;overflow:hidden;
+}
+.card-header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:.25;
+}
+.card-header .icon{font-size:16px;flex-shrink:0;}
+.card-header .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:card-dot 2.5s ease-in-out infinite alternate;}
+@keyframes card-dot{from{opacity:.6;transform:scale(.8);}to{opacity:1;transform:scale(1.1);}}
+
+/* Add variants */
+.add-hdr{background:linear-gradient(135deg,rgba(0,185,107,.12),rgba(0,185,107,.04));color:var(--green);}
+.add-hdr .dot{background:var(--green);box-shadow:0 0 8px var(--green);}
+.remove-hdr{background:linear-gradient(135deg,rgba(232,65,90,.12),rgba(232,65,90,.04));color:var(--red);}
+.remove-hdr .dot{background:var(--red);box-shadow:0 0 8px var(--red);}
+.map-hdr{background:linear-gradient(135deg,rgba(20,88,168,.18),rgba(0,194,224,.08));color:var(--cyan);}
+.map-hdr .dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.mod-hdr{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(139,92,246,.05));color:var(--purple);}
+.mod-hdr .dot{background:var(--purple);box-shadow:0 0 8px var(--purple);}
+
+/* ── Tag areas ── */
+.tag-area{
+  padding:12px 14px;min-height:62px;
+  display:flex;flex-wrap:wrap;gap:7px;align-items:flex-start;cursor:text;
+}
+.tag{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:20px;
+  font-size:12.5px;font-weight:600;letter-spacing:.3px;
+  animation:tag-pop .22s cubic-bezier(.34,1.56,.64,1);
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.tag:hover{transform:translateY(-1px);}
+@keyframes tag-pop{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
+.tag-add{background:var(--greenbg);color:var(--green);border:1px solid rgba(0,185,107,.3);}
+.tag-remove{background:var(--redbg);color:var(--red);border:1px solid rgba(232,65,90,.3);}
+.tag-btn{background:none;border:none;cursor:pointer;font-size:15px;line-height:1;padding:0;opacity:.5;color:inherit;transition:opacity .15s,transform .15s;}
+.tag-btn:hover{opacity:1;transform:scale(1.2);}
+.ghost-input{
+  border:none;outline:none;background:transparent;
+  font-family:inherit;font-size:13px;color:var(--text);
+  min-width:80px;flex:1;caret-color:var(--cyan);
+}
+.ghost-input::placeholder{color:var(--dim);}
+.hint{font-size:11px;color:var(--dim);padding:3px 14px 10px;font-style:italic;letter-spacing:.3px;}
+
+/* ── Map cards ── */
+.map-card{grid-column:1/-1;}
+.map-rows{padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+.map-row{
+  display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,2fr) 32px;
+  align-items:center;gap:10px;
+  animation:row-slide .25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes row-slide{from{opacity:0;transform:translateY(-12px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.map-row-inner{
+  display:flex;flex-wrap:wrap;gap:5px;align-items:center;
+  border:1px solid var(--border2);border-radius:var(--rad2);
+  padding:8px 12px;min-height:44px;background:rgba(255,255,255,.03);
+  cursor:text;transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.map-row-inner:focus-within{
+  border-color:var(--cyan);background:rgba(0,194,224,.04);
+  box-shadow:0 0 0 3px rgba(0,194,224,.10),0 0 18px rgba(0,194,224,.08);
+}
+.map-row-inner.mod-focus:focus-within{
+  border-color:var(--purple);background:rgba(139,92,246,.04);
+  box-shadow:0 0 0 3px rgba(139,92,246,.10),0 0 18px rgba(139,92,246,.08);
+}
+.arrow-badge{
+  display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(0,194,224,.15),rgba(20,88,168,.2));
+  border:1px solid rgba(0,194,224,.25);font-size:14px;
+  color:var(--cyan);flex-shrink:0;transition:transform .2s;
+}
+.map-row:hover .arrow-badge{transform:scale(1.1);}
+.arrow-badge-mod{
+  background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(139,92,246,.08));
+  border-color:rgba(139,92,246,.3);color:var(--purple);
+}
+
+.dx-tag{
+  background:rgba(20,88,168,.2);color:var(--blue3);
+  border:1px solid rgba(59,142,232,.3);font-size:12px;
+  font-weight:600;padding:3px 10px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:4px;
+  animation:tag-pop .18s cubic-bezier(.34,1.56,.64,1);
+}
+.mod-tag{
+  background:rgba(139,92,246,.18);color:#c4b5fd;
+  border:1px solid rgba(139,92,246,.35);
+}
+
+.add-row-btn{
+  display:flex;align-items:center;gap:9px;margin:2px 0 2px;
+  padding:9px 14px;background:rgba(255,255,255,.02);
+  border:1.5px dashed var(--border2);border-radius:var(--rad2);
+  color:var(--dim);font-size:13px;font-family:inherit;cursor:pointer;
+  transition:all .22s;width:100%;font-weight:500;
+}
+.add-row-btn:hover{
+  border-color:var(--cyan);color:var(--cyan);
+  background:rgba(0,194,224,.05);
+  box-shadow:0 0 14px rgba(0,194,224,.1);
+}
+.add-row-btn.mod-add-btn:hover{
+  border-color:var(--purple);color:var(--purple);
+  background:rgba(139,92,246,.05);
+  box-shadow:0 0 14px rgba(139,92,246,.1);
+}
+.del-btn{
+  background:none;border:none;cursor:pointer;color:var(--dim);
+  font-size:18px;padding:0 3px;line-height:1;
+  transition:color .15s,transform .15s;flex-shrink:0;
+}
+.del-btn:hover{color:var(--red);transform:scale(1.2);}
+
+/* ── CPT+Modifier single-row entry ── */
+.cpt-mod-entry-card{
+  background:var(--card);border-radius:var(--rad);border:1px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(12px);
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+.cpt-mod-entry-card:hover{transform:translateY(-2px);box-shadow:var(--shadow),0 0 30px rgba(139,92,246,.1);}
+
+/* ── Output ── */
+.bottom{
+  grid-column:1/-1;background:var(--card);border-radius:var(--rad);
+  border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;
+  backdrop-filter:blur(12px);
+}
+.note-area{padding:18px;}
+.note-label{
+  font-size:11px;font-weight:700;color:var(--muted);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.note-label .live-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--amber);
+  box-shadow:0 0 8px var(--amber);animation:dot-pulse 1.5s infinite;
+}
+.note-box{
+  width:100%;min-height:110px;resize:vertical;
+  border:1px solid var(--border2);border-radius:var(--rad2);
+  padding:14px 16px;font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--text);background:rgba(0,0,0,.2);
+  line-height:1.8;transition:border-color .2s,box-shadow .2s;
+}
+.note-box:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,194,224,.10);}
+
+/* ── Buttons ── */
+.btn-row{
+  display:flex;gap:12px;padding:14px 18px;
+  border-top:1px solid var(--border);
+  background:rgba(0,0,0,.15);flex-wrap:wrap;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 24px;border-radius:10px;font-family:inherit;
+  font-size:14px;font-weight:700;cursor:pointer;border:none;
+  transition:all .22s cubic-bezier(.34,1.56,.64,1);letter-spacing:.3px;
+  position:relative;overflow:hidden;
+}
+.btn::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  transition:opacity .2s;
+}
+.btn:hover::before{opacity:1;}
+.btn:active{transform:scale(.96);}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 4px 14px rgba(20,88,168,.4);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(20,88,168,.55);}
+.btn-acc{background:linear-gradient(135deg,#00897b,var(--green));color:#fff;box-shadow:0 4px 14px rgba(0,185,107,.35);}
+.btn-acc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,185,107,.5);}
+.btn-ghost{
+  background:rgba(255,255,255,.04);color:var(--muted);
+  border:1.5px solid var(--border2);
+}
+.btn-ghost:hover{background:var(--redbg);color:var(--red);border-color:rgba(232,65,90,.4);}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:30px;left:50%;
+  transform:translateX(-50%) translateY(90px);
+  background:linear-gradient(135deg,rgba(15,28,50,.98),rgba(22,40,70,.98));
+  color:#e8f0fe;padding:12px 28px;border-radius:40px;
+  font-size:13.5px;font-weight:600;z-index:9999;opacity:0;
+  transition:all .38s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
+  white-space:nowrap;border:1px solid rgba(0,194,224,.3);
+  box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 24px rgba(0,194,224,.15);
+  backdrop-filter:blur(16px);letter-spacing:.2px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── Section divider label ── */
+.section-label{
+  grid-column:1/-1;display:flex;align-items:center;gap:14px;
+  padding:4px 0;margin-top:4px;
+}
+.section-label span{
+  font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--dim);white-space:nowrap;
+}
+.section-label::before,.section-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+}
+
+/* ── Footer ── */
+.footer{
+  text-align:center;margin-top:40px;
+  font-size:12px;color:var(--dim);letter-spacing:.4px;
+}
+.footer strong{color:var(--muted);}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  .grid{grid-template-columns:1fr;}
+  .map-row{grid-template-columns:1fr 28px 1.4fr 26px;}
+  .btn{padding:10px 16px;font-size:13px;}
+  .header h1{font-size:26px;}
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03);}
+::-webkit-scrollbar-thumb{background:rgba(0,194,224,.2);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,194,224,.4);}
+
+/* ── Number badge for row count ── */
+.row-num{
+  font-size:10px;font-weight:700;color:var(--dim);
+  background:rgba(255,255,255,.05);border-radius:50%;
+  width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;border:1px solid var(--border);
+}
+
+/* ── Stat strip ── */
+.stat-strip{
+  grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;
+}
+.stat-chip{
+  flex:1;min-width:130px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--rad2);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;
+  backdrop-filter:blur(8px);transition:transform .2s;
+}
+.stat-chip:hover{transform:translateY(-2px);}
+.stat-chip .sc-icon{font-size:20px;}
+.stat-chip .sc-val{font-size:22px;font-weight:800;line-height:1;color:var(--text);}
+.stat-chip .sc-lbl{font-size:10px;font-weight:600;color:var(--dim);letter-spacing:.8px;text-transform:uppercase;margin-top:2px;}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas">
+  <div class="bg-orb"></div><div class="bg-orb"></div><div class="bg-orb"></div>
+</div>
+<div class="grid-overlay"></div>
+
+<div class="app">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-pill"><div class="pulse-dot"></div>Midwest Medical Coding Tool</div>
+    <h1>Midwest Medical Coding Tool</h1>
+    <p>Enter codes below &mdash; <strong>Tab</strong> to add a code &nbsp;|&nbsp; <strong>Enter</strong> to move to next section</p>
+    <div class="header-line"></div>
+  </div>
+
+  <div class="grid">
+
+    <!-- STAT STRIP -->
+    <div class="stat-strip" id="statStrip">
+      <div class="stat-chip"><div class="sc-icon">🩺</div><div><div class="sc-val" id="stat-addDx">0</div><div class="sc-lbl">Add DX</div></div></div>
+      <div class="stat-chip"><div class="sc-icon">🗑️</div><div><div class="sc-val" id="stat-removeDx">0</div><div class="sc-lbl">Remove DX</div></div></div>
+      <div class="stat-chip"><div class="sc-icon">➕</div><div><div class="sc-val" id="stat-addCpt">0</div><div class="sc-lbl">Add CPT</div></div></div>
+      <div class="stat-chip"><div class="sc-icon">✂️</div><div><div class="sc-val" id="stat-removeCpt">0</div><div class="sc-lbl">Remove CPT</div></div></div>
+      <div class="stat-chip"><div class="sc-icon">🔗</div><div><div class="sc-val" id="stat-maps">0</div><div class="sc-lbl">CPT Maps</div></div></div>
+      <div class="stat-chip"><div class="sc-icon">🎛️</div><div><div class="sc-val" id="stat-modmaps">0</div><div class="sc-lbl">Mod Maps</div></div></div>
+    </div>
+
+    <!-- ADD DX -->
+    <div class="card">
+      <div class="card-header add-hdr"><div class="dot"></div><span class="icon">🩺</span>Add DX</div>
+      <div class="tag-area" id="area-addDx" onclick="focusInput(this)"></div>
+      <div class="hint">ICD-10 code → Tab to add · Enter for next section</div>
+    </div>
+
+    <!-- REMOVE DX -->
+    <div class="card">
+      <div class="card-header remove-hdr"><div class="dot"></div><span class="icon">🗑️</span>Remove DX</div>
+      <div class="tag-area" id="area-removeDx" onclick="focusInput(this)"></div>
+      <div class="hint">ICD-10 code → Tab to add · Enter for next section</div>
+    </div>
+
+    <!-- ADD CPT -->
+    <div class="card">
+      <div class="card-header add-hdr"><div class="dot"></div><span class="icon">➕</span>Add CPT</div>
+      <div class="tag-area" id="area-addCpt" onclick="focusInput(this)"></div>
+      <div class="hint">CPT code → Tab to add · Enter for next section</div>
+    </div>
+
+    <!-- REMOVE CPT -->
+    <div class="card">
+      <div class="card-header remove-hdr"><div class="dot"></div><span class="icon">✂️</span>Remove CPT</div>
+      <div class="tag-area" id="area-removeCpt" onclick="focusInput(this)"></div>
+      <div class="hint">CPT code → Tab to add · Enter for next section</div>
+    </div>
+
+    <!-- SECTION DIVIDER -->
+    <div class="section-label"><span>Mapping Tables</span></div>
+
+    <!-- MAPPING: CPT → Diagnoses -->
+    <div class="card map-card">
+      <div class="card-header map-hdr"><div class="dot"></div><span class="icon">🔗</span>Mapping &mdash; CPT &rarr; Diagnoses</div>
+      <div class="map-rows" id="mapRows"></div>
+      <div style="padding:6px 14px 14px">
+        <button class="add-row-btn" onclick="addMapRow(true)">＋ Add CPT → Diagnosis mapping row</button>
+      </div>
+    </div>
+
+    <!-- MAPPING: CPT → Modifiers (NEW) -->
+    <div class="card map-card cpt-mod-entry-card">
+      <div class="card-header mod-hdr"><div class="dot"></div><span class="icon">🎛️</span>Mapping &mdash; CPT &rarr; Modifiers</div>
+      <div class="map-rows" id="modMapRows"></div>
+      <div style="padding:6px 14px 14px">
+        <button class="add-row-btn mod-add-btn" onclick="addModMapRow(true)">＋ Add CPT → Modifier mapping row</button>
+      </div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="bottom">
+      <div class="note-area">
+        <div class="note-label"><div class="live-dot"></div>Generated Note</div>
+        <textarea class="note-box" id="noteOutput" placeholder="Click ⚡ Generate Note to build the coder note…" readonly></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateNote()">⚡ Generate Note</button>
+        <button class="btn btn-acc" onclick="copyAndClear()">📋 Copy &amp; Clear</button>
+        <button class="btn btn-ghost" onclick="clearAll()">✕ Clear All</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <strong>Midwest Medical Coding Tool</strong> &mdash; For internal medical coding use only
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── State ── */
+const SECTIONS=['addDx','removeDx','addCpt','removeCpt'];
+const tags={addDx:[],removeDx:[],addCpt:[],removeCpt:[]};
+let mapRows=[];       // CPT → DX rows
+let modMapRows=[];    // CPT → Modifier rows
+let rowCounter=0;
+
+/* ── Focus helpers ── */
+function focusInput(area){
+  const inp=area.querySelector('.ghost-input');
+  if(inp) inp.focus();
+}
+function makeInput(sectionId){
+  const inp=document.createElement('input');
+  inp.type='text'; inp.className='ghost-input';
+  inp.placeholder=(sectionId.includes('Cpt')?'e.g. 99213':'e.g. E11.9');
+  inp.setAttribute('data-section',sectionId);
+  inp.addEventListener('keydown',e=>handleKey(e,sectionId));
+  return inp;
+}
+
+/* ── Tag management ── */
+function addTag(sectionId,val){
+  const v=val.trim().toUpperCase();
+  if(!v) return;
+  if(tags[sectionId].includes(v)){showToast('⚠ '+v+' already added'); return;}
+  tags[sectionId].push(v);
+  renderTags(sectionId);
+  updateStats();
+}
+function removeTag(sectionId,val){
+  tags[sectionId]=tags[sectionId].filter(t=>t!==val);
+  renderTags(sectionId);
+  updateStats();
+}
+function renderTags(sectionId){
+  const area=document.getElementById('area-'+sectionId);
+  area.innerHTML='';
+  const isAdd=sectionId.startsWith('add');
+  tags[sectionId].forEach(v=>{
+    const span=document.createElement('span');
+    span.className='tag '+(isAdd?'tag-add':'tag-remove');
+    span.textContent=v;
+    const btn=document.createElement('button');
+    btn.className='tag-btn'; btn.textContent='×'; btn.type='button';
+    btn.onclick=(e)=>{e.stopPropagation(); removeTag(sectionId,v);};
+    span.appendChild(btn);
+    area.appendChild(span);
+  });
+  const inp=makeInput(sectionId);
+  area.appendChild(inp);
+}
+function handleKey(e,sectionId){
+  const val=e.target.value;
+  if(e.key==='Tab'){
+    e.preventDefault();
+    if(val.trim()) addTag(sectionId,val);
+    e.target.value='';
+    setTimeout(()=>{
+      const area=document.getElementById('area-'+sectionId);
+      const inp=area.querySelector('.ghost-input');
+      if(inp) inp.focus();
+    },20);
+  } else if(e.key==='Enter'){
+    e.preventDefault();
+    if(val.trim()) addTag(sectionId,val);
+    e.target.value='';
+    const idx=SECTIONS.indexOf(sectionId);
+    if(idx<SECTIONS.length-1){
+      setTimeout(()=>focusInput(document.getElementById('area-'+SECTIONS[idx+1])),30);
+    } else { focusMapRow(); }
+  } else if(e.key==='Backspace'&&!val){
+    if(tags[sectionId].length) removeTag(sectionId,tags[sectionId][tags[sectionId].length-1]);
+  }
+}
+
+/* ══════════════════════════════════════
+   MAP ROWS: CPT → Diagnoses
+══════════════════════════════════════ */
+function addMapRow(focusIt=false){
+  const id=++rowCounter;
+  mapRows.push({id,cpt:'',dxs:[]});
+  renderMapRows();
+  updateStats();
+  if(focusIt){
+    setTimeout(()=>{
+      const inp=document.querySelector('[data-map-cpt="'+id+'"]');
+      if(inp) inp.focus();
+    },40);
+  }
+}
+function renderMapRows(){
+  const cont=document.getElementById('mapRows');
+  cont.innerHTML='';
+  mapRows.forEach((row,idx)=>{
+    const div=document.createElement('div');
+    div.className='map-row';
+
+    /* row number */
+    const num=document.createElement('div');
+    num.className='row-num'; num.textContent=idx+1;
+
+    /* CPT box */
+    const cptBox=document.createElement('div');
+    cptBox.className='map-row-inner';
+    const cptInp=document.createElement('input');
+    cptInp.type='text'; cptInp.className='ghost-input';
+    cptInp.placeholder='CPT code'; cptInp.value=row.cpt;
+    cptInp.setAttribute('data-map-cpt',row.id);
+    cptInp.addEventListener('input',e=>{ row.cpt=e.target.value.trim().toUpperCase(); updateStats(); });
+    cptInp.addEventListener('keydown',e=>{
+      if(e.key==='Tab'||e.key==='Enter'){
+        e.preventDefault();
+        setTimeout(()=>{const i=document.querySelector('[data-map-dx="'+row.id+'"]'); if(i) i.focus();},20);
+      }
+    });
+    cptBox.appendChild(cptInp);
+
+    const arrow=document.createElement('div');
+    arrow.className='arrow-badge'; arrow.textContent='→';
+
+    /* DX box */
+    const dxBox=document.createElement('div');
+    dxBox.className='map-row-inner';
+    dxBox.onclick=()=>{ const i=dxBox.querySelector('.ghost-input'); if(i) i.focus(); };
+    row.dxs.forEach(v=>{
+      const t=document.createElement('span');
+      t.className='dx-tag'; t.textContent=v;
+      const rb=document.createElement('button');
+      rb.className='tag-btn'; rb.textContent='×'; rb.type='button';
+      rb.onclick=(e)=>{ e.stopPropagation(); row.dxs=row.dxs.filter(d=>d!==v); renderMapRows(); updateStats(); setTimeout(()=>{const i=document.querySelector('[data-map-dx="'+row.id+'"]');if(i)i.focus();},20); };
+      t.appendChild(rb); dxBox.appendChild(t);
+    });
+    const dxInp=document.createElement('input');
+    dxInp.type='text'; dxInp.className='ghost-input';
+    dxInp.placeholder='DX codes…';
+    dxInp.setAttribute('data-map-dx',row.id);
+    dxInp.addEventListener('keydown',e=>{
+      if(e.key==='Tab'){
+        e.preventDefault();
+        if(dxInp.value.trim()){ row.dxs.push(dxInp.value.trim().toUpperCase()); dxInp.value=''; renderMapRows(); updateStats(); setTimeout(()=>{const i=document.querySelector('[data-map-dx="'+row.id+'"]');if(i)i.focus();},20);
+        } else { const next=mapRows[idx+1]; if(next){ setTimeout(()=>{const i=document.querySelector('[data-map-cpt="'+next.id+'"]');if(i)i.focus();},20); } else { addMapRow(true); } }
+      } else if(e.key==='Enter'){
+        e.preventDefault();
+        if(dxInp.value.trim()){ row.dxs.push(dxInp.value.trim().toUpperCase()); dxInp.value=''; renderMapRows(); updateStats(); setTimeout(()=>{const i=document.querySelector('[data-map-dx="'+row.id+'"]');if(i)i.focus();},20);
+        } else { const next=mapRows[idx+1]; if(next){ setTimeout(()=>{const i=document.querySelector('[data-map-cpt="'+next.id+'"]');if(i)i.focus();},20); } else { addModMapRow(true); } }
+      } else if(e.key==='Backspace'&&!dxInp.value){
+        if(row.dxs.length){ row.dxs.pop(); renderMapRows(); updateStats(); setTimeout(()=>{const i=document.querySelector('[data-map-dx="'+row.id+'"]');if(i)i.focus();},20); }
+      }
+    });
+    dxBox.appendChild(dxInp);
+
+    const del=document.createElement('button');
+    del.className='del-btn'; del.textContent='×'; del.title='Remove row';
+    del.onclick=()=>{ mapRows=mapRows.filter(r=>r.id!==row.id); renderMapRows(); updateStats(); };
+
+    // layout: use 4 cols with row-num replacing the arrow-before approach
+    // actually we keep the original 4-col grid but add row-num inline inside cptBox label area
+    div.appendChild(cptBox);
+    div.appendChild(arrow);
+    div.appendChild(dxBox);
+    div.appendChild(del);
+    cont.appendChild(div);
+  });
+}
+function focusMapRow(){
+  if(mapRows.length===0) addMapRow(true);
+  else { const inp=document.querySelector('[data-map-cpt="'+mapRows[0].id+'"]'); if(inp) inp.focus(); }
+}
+
+/* ══════════════════════════════════════
+   MOD MAP ROWS: CPT → Modifiers  (NEW)
+══════════════════════════════════════ */
+function addModMapRow(focusIt=false){
+  const id=++rowCounter;
+  modMapRows.push({id,cpt:'',mods:[]});
+  renderModMapRows();
+  updateStats();
+  if(focusIt){
+    setTimeout(()=>{
+      const inp=document.querySelector('[data-modmap-cpt="'+id+'"]');
+      if(inp) inp.focus();
+    },40);
+  }
+}
+function renderModMapRows(){
+  const cont=document.getElementById('modMapRows');
+  cont.innerHTML='';
+  modMapRows.forEach((row,idx)=>{
+    const div=document.createElement('div');
+    div.className='map-row';
+
+    /* CPT box */
+    const cptBox=document.createElement('div');
+    cptBox.className='map-row-inner';
+    const cptInp=document.createElement('input');
+    cptInp.type='text'; cptInp.className='ghost-input';
+    cptInp.placeholder='CPT code'; cptInp.value=row.cpt;
+    cptInp.setAttribute('data-modmap-cpt',row.id);
+    cptInp.addEventListener('input',e=>{ row.cpt=e.target.value.trim().toUpperCase(); updateStats(); });
+    cptInp.addEventListener('keydown',e=>{
+      if(e.key==='Tab'||e.key==='Enter'){
+        e.preventDefault();
+        setTimeout(()=>{ const i=document.querySelector('[data-modmap-mod="'+row.id+'"]'); if(i) i.focus(); },20);
+      }
+    });
+    cptBox.appendChild(cptInp);
+
+    const arrow=document.createElement('div');
+    arrow.className='arrow-badge arrow-badge-mod'; arrow.textContent='→';
+
+    /* Modifier box */
+    const modBox=document.createElement('div');
+    modBox.className='map-row-inner mod-focus';
+    modBox.onclick=()=>{ const i=modBox.querySelector('.ghost-input'); if(i) i.focus(); };
+    row.mods.forEach(v=>{
+      const t=document.createElement('span');
+      t.className='dx-tag mod-tag'; t.textContent=v;
+      const rb=document.createElement('button');
+      rb.className='tag-btn'; rb.textContent='×'; rb.type='button';
+      rb.onclick=(e)=>{ e.stopPropagation(); row.mods=row.mods.filter(m=>m!==v); renderModMapRows(); updateStats(); setTimeout(()=>{const i=document.querySelector('[data-modmap-mod="'+row.id+'"]');if(i)i.focus();},20); };
+      t.appendChild(rb); modBox.appendChild(t);
+    });
+    const modInp=document.createElement('input');
+    modInp.type='text'; modInp.className='ghost-input';
+    modInp.placeholder='Modifier codes… (Tab to add)';
+    modInp.setAttribute('data-modmap-mod',row.id);
+    modInp.addEventListener('keydown',e=>{
+      if(e.key==='Tab'){
+        e.preventDefault();
+        if(modInp.value.trim()){
+          const v=modInp.value.trim().toUpperCase();
+          if(!row.mods.includes(v)) row.mods.push(v);
+          else showToast('⚠ '+v+' already in this row');
+          modInp.value=''; renderModMapRows(); updateStats();
+          setTimeout(()=>{ const i=document.querySelector('[data-modmap-mod="'+row.id+'"]'); if(i) i.focus(); },20);
+        } else {
+          const next=modMapRows[idx+1];
+          if(next){ setTimeout(()=>{ const i=document.querySelector('[data-modmap-cpt="'+next.id+'"]'); if(i) i.focus(); },20); }
+          else { addModMapRow(true); }
+        }
+      } else if(e.key==='Enter'){
+        e.preventDefault();
+        if(modInp.value.trim()){
+          const v=modInp.value.trim().toUpperCase();
+          if(!row.mods.includes(v)) row.mods.push(v);
+          else showToast('⚠ '+v+' already in this row');
+          modInp.value=''; renderModMapRows(); updateStats();
+          setTimeout(()=>{ const i=document.querySelector('[data-modmap-mod="'+row.id+'"]'); if(i) i.focus(); },20);
+        } else {
+          const next=modMapRows[idx+1];
+          if(next){ setTimeout(()=>{ const i=document.querySelector('[data-modmap-cpt="'+next.id+'"]'); if(i) i.focus(); },20); }
+          else { generateNote(); }
+        }
+      } else if(e.key==='Backspace'&&!modInp.value){
+        if(row.mods.length){ row.mods.pop(); renderModMapRows(); updateStats(); setTimeout(()=>{ const i=document.querySelector('[data-modmap-mod="'+row.id+'"]'); if(i) i.focus(); },20); }
+      }
+    });
+    modBox.appendChild(modInp);
+
+    const del=document.createElement('button');
+    del.className='del-btn'; del.textContent='×'; del.title='Remove row';
+    del.onclick=()=>{ modMapRows=modMapRows.filter(r=>r.id!==row.id); renderModMapRows(); updateStats(); };
+
+    div.appendChild(cptBox);
+    div.appendChild(arrow);
+    div.appendChild(modBox);
+    div.appendChild(del);
+    cont.appendChild(div);
+  });
+}
+
+/* ── Stats ── */
+function updateStats(){
+  document.getElementById('stat-addDx').textContent=tags.addDx.length;
+  document.getElementById('stat-removeDx').textContent=tags.removeDx.length;
+  document.getElementById('stat-addCpt').textContent=tags.addCpt.length;
+  document.getElementById('stat-removeCpt').textContent=tags.removeCpt.length;
+  document.getElementById('stat-maps').textContent=mapRows.filter(r=>r.cpt&&r.dxs.length).length;
+  document.getElementById('stat-modmaps').textContent=modMapRows.filter(r=>r.cpt&&r.mods.length).length;
+}
+
+/* ── Generate note ── */
+function generateNote(){
+  const parts=['As per MR review'];
+  if(tags.addDx.length)    parts.push('ADD DX ['+tags.addDx.join(', ')+']');
+  if(tags.removeDx.length) parts.push('REMOVE DX ['+tags.removeDx.join(', ')+']');
+  if(tags.addCpt.length)   parts.push('ADD CPT ['+tags.addCpt.join(', ')+']');
+  if(tags.removeCpt.length)parts.push('REMOVE CPT ['+tags.removeCpt.join(', ')+']');
+
+  const validMaps=mapRows.filter(r=>r.cpt&&r.dxs.length);
+  if(validMaps.length){
+    const mapStr=validMaps.map(r=>r.cpt+'→'+r.dxs.join(',')).join('; ');
+    parts.push('MAPPING CPT→DX '+mapStr);
+  }
+
+  const validModMaps=modMapRows.filter(r=>r.cpt&&r.mods.length);
+  if(validModMaps.length){
+    const modStr=validModMaps.map(r=>r.cpt+'→'+r.mods.join(',')).join('; ');
+    parts.push('MAPPING CPT→MOD '+modStr);
+  }
+
+  if(parts.length===1){showToast('⚠ Please enter at least one code'); return;}
+  document.getElementById('noteOutput').value=parts.join(', ')+'.';
+  showToast('✓ Note generated!');
+  animateOutput();
+}
+
+function animateOutput(){
+  const box=document.getElementById('noteOutput');
+  box.style.borderColor='var(--cyan)';
+  box.style.boxShadow='0 0 0 3px rgba(0,194,224,.15),0 0 30px rgba(0,194,224,.1)';
+  setTimeout(()=>{ box.style.borderColor=''; box.style.boxShadow=''; },1200);
+}
+
+/* ── Copy & Clear ── */
+function copyAndClear(){
+  const note=document.getElementById('noteOutput').value;
+  if(!note){showToast('⚠ Generate a note first'); return;}
+  navigator.clipboard.writeText(note).then(()=>{
+    showToast('✓ Copied to clipboard!'); clearAll();
+  }).catch(()=>{
+    document.getElementById('noteOutput').select();
+    document.execCommand('copy');
+    showToast('✓ Copied!'); clearAll();
+  });
+}
+
+/* ── Clear all ── */
+function clearAll(){
+  SECTIONS.forEach(s=>{ tags[s]=[]; renderTags(s); });
+  mapRows=[]; renderMapRows();
+  modMapRows=[]; renderModMapRows();
+  document.getElementById('noteOutput').value='';
+  addMapRow(); addModMapRow();
+  updateStats();
+  showToast('✓ All fields cleared');
+}
+
+/* ── Toast ── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._to);
+  t._to=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ── Init ── */
+SECTIONS.forEach(s=>renderTags(s));
+addMapRow();
+addModMapRow();
+updateStats();
+</script>
+</body>
+</html>
