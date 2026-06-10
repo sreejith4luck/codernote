@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Midwest Medical Coding Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── Base Reset & Variables ── */
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+:root {
+  /* Core Colors - LIGHT MODE */
+  --bg: #f0f4f8; /* Soft light ice blue */
+  --text-main: #0f172a; /* Deep slate */
+  --text-muted: #475569;
+  --card-bg: #ffffff;
+  --border-light: #cbd5e1;
+  
+  /* Brand/Accent Colors */
+  --brand-blue: #3b82f6; /* Light blue accent */
+  --brand-blue-hover: #2563eb;
+  --brand-purple: #7c3aed;
+  --brand-cyan: #06b6d4;
+  
+  /* Status Colors (Light Theme Accents) */
+  --green: #10b981; /* Light green */
+  --green-bg: #e6f7f0;
+  --red: #ef4444; /* Light red */
+  --red-bg: #fef2f2;
+  --blue: #3b82f6;
+  --blue-bg: #eff6ff;
+  --purple: #8b5cf6;
+  --purple-bg: #f5f3ff;
+  --orange: #f59e0b;
+  --orange-bg: #fffbeb;
+
+  /* UI Elements */
+  --pill-bg: #f1f5f9;
+  --pill-border: #cbd5e1;
+  --shortcuts-bg: rgba(255, 255, 255, 0.6);
+  
+  /* Shadows & Glows */
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.06);
+  --glow-focus: 0 0 0 4px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.1);
+  --glow-green: 0 0 0 4px rgba(16, 185, 129, 0.15), 0 0 20px rgba(16, 185, 129, 0.1);
+  --glow-red: 0 0 0 4px rgba(239, 68, 68, 0.15), 0 0 20px rgba(239, 68, 68, 0.1);
+  --glow-cyan: 0 0 0 4px rgba(6, 182, 212, 0.15), 0 0 20px rgba(6, 182, 212, 0.1);
+  --glow-purple: 0 0 0 4px rgba(139, 92, 246, 0.15), 0 0 20px rgba(139, 92, 246, 0.1);
+
+  --rad-lg: 16px;
+  --rad-md: 12px;
+  --rad-sm: 8px;
+}
+
+/* ── Core Colors - DARK MODE (No Pure Blacks, Deep Navy Blue Base) ── */
+body.theme-dark {
+  --bg: #0b1329; /* Professional deep dark blue background */
+  --text-main: #f1f5f9; /* Slate 100 */
+  --text-muted: #94a3b8; /* Slate 400 */
+  --card-bg: #131c35; /* Navy card background */
+  --border-light: #1e294b; /* Deep blue borders */
+  
+  --brand-blue: #818cf8; /* Brightened for dark mode readability */
+  --brand-blue-hover: #6366f1;
+  --brand-purple: #c084fc;
+  --brand-cyan: #22d3ee;
+  
+  --green: #34d399; /* Radiant dark mode green */
+  --green-bg: rgba(52, 211, 153, 0.12);
+  --red: #f87171; /* Radiant dark mode red */
+  --red-bg: rgba(248, 113, 113, 0.12);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96, 165, 250, 0.12);
+  --purple: #c084fc;
+  --purple-bg: rgba(192, 132, 252, 0.12);
+  --orange: #fbbf24;
+  --orange-bg: rgba(251, 191, 36, 0.12);
+
+  --pill-bg: #1e293b;
+  --pill-border: #334155;
+  --shortcuts-bg: rgba(19, 28, 53, 0.6);
+  
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 12px 36px rgba(0, 0, 0, 0.3);
+  
+  --glow-focus: 0 0 0 4px rgba(129, 140, 248, 0.25), 0 0 20px rgba(129, 140, 248, 0.2);
+  --glow-green: 0 0 0 4px rgba(52, 211, 153, 0.25), 0 0 20px rgba(52, 211, 153, 0.2);
+  --glow-red: 0 0 0 4px rgba(248, 113, 113, 0.25), 0 0 20px rgba(248, 113, 113, 0.2);
+  --glow-cyan: 0 0 0 4px rgba(34, 211, 238, 0.25), 0 0 20px rgba(34, 211, 238, 0.2);
+  --glow-purple: 0 0 0 4px rgba(192, 132, 252, 0.25), 0 0 20px rgba(192, 132, 252, 0.2);
+}
+
+/* ── Core Colors - COLORFUL MODE ── */
+body.theme-colorful {
+  --bg: #f3e8f7; /* Soft lavender base */
+  --text-main: #2d1a3e; /* Deep plum for readability */
+  --text-muted: #6b4f82;
+  --card-bg: #fef0f5; /* Soft blush white */
+  --border-light: #d8b4e2;
+
+  --brand-blue: #7c4dbd;
+  --brand-blue-hover: #6a3da8;
+  --brand-purple: #c2569c;
+  --brand-cyan: #3aada8;
+
+  --green: #3aad6f;
+  --green-bg: #d6f5e8;
+  --red: #d94f6e;
+  --red-bg: #fce4ec;
+  --blue: #5b6fc9;
+  --blue-bg: #e4e8fa;
+  --purple: #9c4fb5;
+  --purple-bg: #f0dff7;
+  --orange: #c87a2a;
+  --orange-bg: #fdefd8;
+
+  --pill-bg: #f7e8f2;
+  --pill-border: #d8b4e2;
+  --shortcuts-bg: rgba(254, 240, 245, 0.75);
+
+  --shadow-sm: 0 4px 12px rgba(100, 40, 130, 0.08);
+  --shadow-md: 0 10px 30px rgba(100, 40, 130, 0.14);
+
+  --glow-focus: 0 0 0 4px rgba(124, 77, 189, 0.18), 0 0 20px rgba(124, 77, 189, 0.12);
+  --glow-green: 0 0 0 4px rgba(58, 173, 111, 0.2), 0 0 20px rgba(58, 173, 111, 0.12);
+  --glow-red: 0 0 0 4px rgba(217, 79, 110, 0.2), 0 0 20px rgba(217, 79, 110, 0.12);
+  --glow-cyan: 0 0 0 4px rgba(58, 173, 168, 0.2), 0 0 20px rgba(58, 173, 168, 0.12);
+  --glow-purple: 0 0 0 4px rgba(156, 79, 181, 0.2), 0 0 20px rgba(156, 79, 181, 0.12);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* ── Animated Grid Background ── */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.bg-glow {
+  position: fixed;
+  top: -20%; left: -10%;
+  width: 70%; height: 70%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── App Shell ── */
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ── */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.header-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(99, 102, 241, 0.1));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--brand-blue);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 20px;
+  border-radius: 30px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+.header-pill .pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--brand-cyan);
+  box-shadow: 0 0 8px var(--brand-cyan);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.header h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header h1 span {
+  color: var(--text-muted);
+  -webkit-text-fill-color: var(--text-muted);
+  font-weight: 300;
+}
+.header p {
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+}
+.header-line {
+  width: 80px; height: 3px;
+  margin: 16px auto 0;
+  background: linear-gradient(90deg, transparent, var(--brand-blue), transparent);
+  border-radius: 4px;
+}
+
+/* ── Theme Switcher Control ── */
+.theme-switcher-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.theme-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: var(--pill-bg);
+  border: 1px solid var(--border-light);
+  padding: 4px;
+  border-radius: 30px;
+  box-shadow: var(--shadow-sm);
+}
+.switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.switcher-btn .icon {
+  font-size: 14px;
+}
+.switcher-btn.active {
+  background: var(--card-bg);
+  color: var(--brand-blue);
+  box-shadow: var(--shadow-sm);
+}
+body.theme-dark .switcher-btn.active {
+  color: var(--brand-cyan);
+}
+body.theme-colorful .switcher-btn.active {
+  color: var(--brand-purple);
+}
+
+/* ── Dynamic Click & Keyframe Animations ── */
+@keyframes click-red-pulse {
+  0% {
+    box-shadow: 0 0 0 0px rgba(239, 68, 68, 0.8), 0 0 4px rgba(239, 68, 68, 0.5);
+    border-color: var(--red);
+  }
+  30% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0.4), 0 0 12px rgba(239, 68, 68, 0.35);
+    border-color: var(--red);
+  }
+  100% {
+    box-shadow: var(--shadow-sm);
+  }
+}
+.click-glow-active {
+  animation: click-red-pulse 0.55s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Error shaker layout */
+@keyframes error-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+.error-shake-active {
+  animation: error-shake 0.4s ease-in-out, click-red-pulse 0.4s ease-out !important;
+  border-color: var(--red) !important;
+}
+
+/* Advance / Field transition colors animation */
+@keyframes field-advance-flash {
+  0% {
+    border-color: var(--brand-cyan);
+    box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.4), 0 0 15px rgba(6, 182, 212, 0.3);
+    transform: scale(1.02);
+  }
+  50% {
+    border-color: var(--brand-purple);
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.4), 0 0 15px rgba(139, 92, 246, 0.3);
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.advance-flash-active {
+  animation: field-advance-flash 0.55s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Color breathe focus typing animations */
+.ghost-input:focus {
+  color: var(--text-main);
+  text-shadow: 0 0 1px rgba(99, 102, 241, 0.4);
+}
+.card:focus-within {
+  animation: focus-card-breathe 4s infinite ease-in-out;
+}
+@keyframes focus-card-breathe {
+  0%, 100% { border-color: var(--brand-blue); box-shadow: var(--glow-focus); }
+  50% { border-color: var(--brand-purple); box-shadow: var(--glow-purple); }
+}
+.pill-wrap:focus-within {
+  animation: focus-pill-breathe 4s infinite ease-in-out;
+}
+@keyframes focus-pill-breathe {
+  0%, 100% { border-color: var(--brand-blue); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25); }
+  50% { border-color: var(--brand-cyan); box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25); }
+}
+
+/* ── Main Layout (Left/Right) ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ── Left Column Elements ── */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.quad-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 600px) {
+  .quad-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--rad-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.card-header .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.card-header .icon { font-size: 16px; opacity: 0.8;}
+
+/* Header Colors */
+.hdr-add { background: var(--green-bg); color: var(--green); }
+.hdr-add .dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.hdr-rem { background: var(--red-bg); color: var(--red); }
+.hdr-rem .dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.hdr-map-dx { background: var(--blue-bg); color: var(--blue); }
+.hdr-map-dx .dot { background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+.hdr-map-mod { background: var(--purple-bg); color: var(--purple); }
+.hdr-map-mod .dot { background: var(--purple); box-shadow: 0 0 8px var(--purple); }
+.hdr-note { background: var(--orange-bg); color: var(--orange); }
+.hdr-note .dot { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+
+/* ── Input Areas (Left Cards) ── */
+.input-body {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  cursor: text;
+  transition: background-color 0.3s ease;
+}
+.tag-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 40px;
+  cursor: text;
+}
+.ghost-input {
+  border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 15px; color: var(--text-main);
+  flex: 1 1 100px; min-width: 120px;
+  padding: 4px 0;
+  text-transform: uppercase; /* visually forces uppercase while typing */
+  transition: color 0.3s ease;
+}
+.ghost-input::placeholder { color: var(--text-muted); opacity: 0.6; font-weight: 300; text-transform: none; }
+.card-footer-hint {
+  padding: 10px 20px;
+  background: var(--pill-bg);
+  border-top: 1px dashed var(--border-light);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-transform: none;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.8) translateY(5px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.tag-add { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.2); }
+.tag-rem { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.2); }
+.tag-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 16px; line-height: 1;
+  opacity: 0.5; color: inherit;
+  transition: all 0.2s;
+  padding: 0 2px;
+}
+.tag-btn:hover { opacity: 1; transform: scale(1.2); }
+
+/* ── Right Column: Mapping ── */
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.map-list {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.map-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.pill-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  border-radius: var(--rad-md);
+  padding: 8px 14px;
+  min-height: 48px;
+  transition: all 0.25s;
+  cursor: text;
+}
+.pill-wrap:focus-within {
+  background: var(--card-bg);
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.pill-wrap.mod-focus:focus-within {
+  border-color: var(--brand-purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+.pill-cpt { width: 140px; flex-shrink: 0; }
+.pill-dx { flex-grow: 1; flex-wrap: wrap; }
+
+.map-arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue-bg); border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--blue); font-size: 14px;
+  flex-shrink: 0;
+}
+.arrow-mod { background: var(--purple-bg); border-color: rgba(139, 92, 246, 0.2); color: var(--purple); }
+
+.dx-tag {
+  background: var(--card-bg); color: var(--blue);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-size: 13px; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px;
+  display: inline-flex; align-items: center; gap: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  animation: popIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: none;
+}
+.mod-tag { background: var(--card-bg); color: var(--purple); border-color: rgba(139, 92, 246, 0.3); }
+
+.add-row-wrapper {
+  padding: 0 20px 20px;
+}
+.btn-add-row {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px; background: transparent;
+  border: 1.5px dashed var(--pill-border); border-radius: var(--rad-md);
+  color: var(--text-muted); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-add-row:hover {
+  border-color: var(--brand-blue); background: var(--blue-bg); color: var(--brand-blue);
+}
+.btn-add-row.mod-btn:hover {
+  border-color: var(--brand-purple); background: var(--purple-bg); color: var(--brand-purple);
+}
+.del-row-btn {
+  background: none; border: none; cursor: pointer; color: var(--pill-border);
+  font-size: 20px; line-height: 1; transition: all 0.2s; padding: 4px;
+}
+.del-row-btn:hover { color: var(--red); transform: scale(1.1); }
+
+/* ── Generated Note ── */
+.note-area {
+  padding: 24px;
+  background: var(--card-bg);
+  transition: background-color 0.3s ease;
+}
+.note-box {
+  width: 100%; min-height: 140px; resize: vertical;
+  border: 1px solid var(--border-light); border-radius: var(--rad-md);
+  padding: 16px; font-family: 'JetBrains Mono', monospace;
+  font-size: 14px; color: var(--text-main); background: var(--pill-bg);
+  line-height: 1.6; transition: all 0.3s;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+.note-box:focus {
+  outline: none; border-color: var(--orange); background: var(--card-bg);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+}
+
+.action-bar {
+  display: flex; gap: 12px; padding: 0 24px 24px;
+  background: var(--card-bg); flex-wrap: wrap;
+  transition: background-color 0.3s ease;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: 8px; font-family: inherit;
+  font-size: 14px; font-weight: 700; cursor: pointer; border: none;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); flex: 1;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--brand-blue); color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover { background: var(--brand-blue-hover); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
+
+.btn-success {
+  background: var(--green); color: #fff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.btn-success:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4); }
+
+.btn-ghost {
+  background: var(--pill-bg); color: var(--text-muted); border: 1px solid var(--border-light);
+}
+.btn-ghost:hover { background: var(--red-bg); color: var(--red); border-color: rgba(239, 68, 68, 0.3); }
+
+/* ── Keyboard Shortcuts ── */
+.shortcuts-panel {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 16px 24px;
+  background: var(--shortcuts-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--rad-md);
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.kbd-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-muted); font-weight: 500;
+  background: var(--card-bg); padding: 6px 12px; border-radius: 6px;
+  border: 1px solid var(--border-light);
+  flex: 1 1 calc(50% - 8px);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.kbd {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+  background: var(--pill-bg); padding: 2px 6px; border-radius: 4px;
+  border: 1px solid var(--border-light); color: var(--text-main);
+  box-shadow: 0 1px 0 var(--border-light);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── DateTime & Analog Clock (top-right) ── */
+.datetime-widget {
+  position: fixed;
+  top: 18px;
+  right: 22px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+.datetime-display {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--rad-md);
+  padding: 7px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  opacity: 0.95;
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+.datetime-display .dt-time {
+  color: var(--brand-blue);
+  font-size: 13px;
+}
+.analog-clock-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  padding: 0;
+  opacity: 0.97;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+  line-height: 0;
+}
+#svgClock {
+  display: block;
+  width: 150px;
+  height: 150px;
+}
+@media (max-width: 600px) {
+  .datetime-widget { top: 8px; right: 8px; }
+  .datetime-display { font-size: 10px; padding: 4px 10px; }
+  #svgClock { width: 110px; height: 110px; }
+}
+
+/* ── Toast Notification ── */
+.toast {
+  position: fixed; bottom: 40px; left: 50%;
+  transform: translate(-50%, 20px);
+  background: var(--text-main); color: var(--card-bg);
+  padding: 14px 32px; border-radius: 30px;
+  font-size: 14px; font-weight: 600; z-index: 9999;
+  opacity: 0; visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+.toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="app">
+  <div class="header">
+    <div class="header-pill"><div class="pulse-dot"></div>Midwest Medical Coding Tool</div>
+    <p>Context logic rendering pipeline console matrix interface.</p>
+    
+    <!-- Theme Switcher Control -->
+    <div class="theme-switcher-container">
+      <div class="theme-switcher">
+        <button class="switcher-btn active" id="btnThemeLight" onclick="setTheme('light')">
+          <span class="icon">☀️</span> Light Mode
+        </button>
+        <button class="switcher-btn" id="btnThemeDark" onclick="setTheme('dark')">
+          <span class="icon">🌙</span> Dark Mode
+        </button>
+        <button class="switcher-btn" id="btnThemeColorful" onclick="setTheme('colorful')">
+          <span class="icon">🎨</span> Colorful Mode
+        </button>
+      </div>
+    </div>
+    
+    <div class="header-line"></div>
+  </div>
+
+  <div class="layout">
+    
+    <div class="left-col">
+      <div class="quad-grid">
+        <div class="card focus-green">
+          <div class="card-header hdr-add"><div class="dot"></div><span class="icon">🩺</span>Add DX</div>
+          <div class="input-body" onclick="focusInput(this)">
+            <div class="tag-area" id="area-addDx"></div>
+          </div>
+          <div class="card-footer-hint">Tab to add • Enter next field</div>
+        </div>
+
+        <div class="card focus-red">
+          <div class="card-header hdr-rem"><div class="dot"></div><span class="icon">🗑️</span>Remove DX</div>
+          <div class="input-body" onclick="focusInput(this)">
+            <div class="tag-area" id="area-removeDx"></div>
+          </div>
+          <div class="card-footer-hint">Tab to add • Enter next field</div>
+        </div>
+
+        <div class="card focus-green">
+          <div class="card-header hdr-add"><div class="dot"></div><span class="icon">➕</span>Add CPT</div>
+          <div class="input-body" onclick="focusInput(this)">
+            <div class="tag-area" id="area-addCpt"></div>
+          </div>
+          <div class="card-footer-hint">Tab to add • Enter next field</div>
+        </div>
+
+        <div class="card focus-red">
+          <div class="card-header hdr-rem"><div class="dot"></div><span class="icon">✂️</span>Remove CPT</div>
+          <div class="input-body" onclick="focusInput(this)">
+            <div class="tag-area" id="area-removeCpt"></div>
+          </div>
+          <div class="card-footer-hint">Tab to add • Enter next field</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header hdr-note"><div class="dot"></div>GENERATED NOTE</div>
+        <div class="note-area">
+          <textarea class="note-box" id="noteOutput" placeholder="Click ⚡ Generate Note to build your output. You can freely edit this box directly before copying..."></textarea>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-primary" onclick="generateNote()">⚡ Generate Note</button>
+          <button class="btn btn-success" onclick="copyAndClear()">📋 Copy &amp; Clear</button>
+          <button class="btn btn-ghost" onclick="clearAll()">✕ Clear All</button>
+        </div>
+      </div>
+
+      <div class="shortcuts-panel">
+        <div class="kbd-item"><span class="kbd">Tab</span> Add Code Element Tag</div>
+        <div class="kbd-item"><span class="kbd">Enter</span> Advance Section Block</div>
+        <div class="kbd-item"><span class="kbd">Ctrl + G</span> Auto-Build Note</div>
+        <div class="kbd-item"><span class="kbd">Ctrl+Shift+C</span> Copy &amp; Erase Board</div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="card focus-cyan">
+        <div class="card-header hdr-map-dx"><div class="dot"></div><span class="icon">🔗</span>Mapping — CPT → Diagnoses</div>
+        <div class="map-list" id="mapRows"></div>
+        <div class="add-row-wrapper">
+          <button class="btn-add-row" onclick="addMapRow(true)">+ Add CPT → Diagnosis mapping row</button>
+        </div>
+      </div>
+
+      <div class="card focus-purple">
+        <div class="card-header hdr-map-mod"><div class="dot"></div><span class="icon">🎛️</span>Mapping — CPT → Modifiers</div>
+        <div class="map-list" id="modMapRows"></div>
+        <div class="add-row-wrapper">
+          <button class="btn-add-row mod-btn" onclick="addModMapRow(true)">+ Add CPT → Modifier mapping row</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="datetime-widget">
+  <div class="datetime-display">
+    <span id="dtDate"></span>&nbsp;&nbsp;<span class="dt-time" id="dtTime"></span>
+  </div>
+  <div class="analog-clock-wrap">
+    <svg id="svgClock" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer ring -->
+      <circle cx="100" cy="100" r="97" fill="none" stroke-width="2" class="svg-border"/>
+      <!-- Inner background -->
+      <circle cx="100" cy="100" r="94" class="svg-face"/>
+      <!-- Subtle inner ring -->
+      <circle cx="100" cy="100" r="88" fill="none" stroke-width="1" class="svg-inner-ring"/>
+      <!-- Minute tick marks -->
+      <g id="svgTicks"></g>
+      <!-- Hour numbers -->
+      <g id="svgNumbers"></g>
+      <!-- Hour hand -->
+      <line id="svgHour" x1="100" y1="100" x2="100" y2="44" stroke-width="5" stroke-linecap="round" class="svg-hour"/>
+      <!-- Minute hand -->
+      <line id="svgMinute" x1="100" y1="100" x2="100" y2="30" stroke-width="3.5" stroke-linecap="round" class="svg-minute"/>
+      <!-- Second hand -->
+      <line id="svgSecond" x1="100" y1="112" x2="100" y2="22" stroke-width="1.5" stroke-linecap="round" class="svg-second"/>
+      <!-- Center cap -->
+      <circle cx="100" cy="100" r="5" class="svg-center-outer"/>
+      <circle cx="100" cy="100" r="2.5" class="svg-center-inner"/>
+    </svg>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── State ── */
+const SECTIONS = ['addDx', 'removeDx', 'addCpt', 'removeCpt'];
+const tags = { addDx: [], removeDx: [], addCpt: [], removeCpt: [] };
+let mapRows = [];
+let modMapRows = [];
+let rowCounter = 0;
+
+/* ── Theme Switcher Logic ── */
+function setTheme(theme) {
+  document.body.classList.remove('theme-dark', 'theme-colorful');
+  document.getElementById('btnThemeLight').classList.remove('active');
+  document.getElementById('btnThemeDark').classList.remove('active');
+  document.getElementById('btnThemeColorful').classList.remove('active');
+
+  if (theme === 'dark') {
+    document.body.classList.add('theme-dark');
+    document.getElementById('btnThemeDark').classList.add('active');
+    localStorage.setItem('mw-coding-tool-theme', 'dark');
+  } else if (theme === 'colorful') {
+    document.body.classList.add('theme-colorful');
+    document.getElementById('btnThemeColorful').classList.add('active');
+    localStorage.setItem('mw-coding-tool-theme', 'colorful');
+  } else {
+    document.getElementById('btnThemeLight').classList.add('active');
+    localStorage.setItem('mw-coding-tool-theme', 'light');
+  }
+}
+
+/* ── Advanced Focus Switch Handler ── */
+function safeFocus(elem) {
+  if (!elem) return;
+  elem.focus();
+  const parent = elem.closest('.pill-wrap, .input-body, .note-box');
+  const target = parent || elem;
+  
+  target.classList.remove('advance-flash-active');
+  void target.offsetWidth; // Force reflow
+  target.classList.add('advance-flash-active');
+  setTimeout(() => {
+    target.classList.remove('advance-flash-active');
+  }, 550);
+}
+
+/* ── Error Shaker & Glow Alert Handler ── */
+function triggerErrorGlow(elem) {
+  if (!elem) return;
+  const parent = elem.closest('.pill-wrap, .input-body');
+  const target = parent || elem;
+  
+  target.classList.remove('error-shake-active');
+  void target.offsetWidth; // Force reflow
+  target.classList.add('error-shake-active');
+  setTimeout(() => {
+    target.classList.remove('error-shake-active');
+  }, 450);
+}
+
+/* ── Dynamic Click & Keyframe Pulse ── */
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('button, input, textarea, .pill-wrap, .input-body');
+  if (target && !target.classList.contains('advance-flash-active') && !target.classList.contains('error-shake-active')) {
+    target.classList.remove('click-glow-active');
+    void target.offsetWidth; // Force CSS reflow
+    target.classList.add('click-glow-active');
+    setTimeout(() => {
+      target.classList.remove('click-glow-active');
+    }, 550);
+  }
+});
+
+/* ── Utilities ── */
+function focusInput(area) {
+  const inp = area.querySelector('.ghost-input');
+  if (inp) safeFocus(inp);
+}
+
+function makeInput(sectionId) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'ghost-input';
+  inp.setAttribute('autocomplete', 'off');
+  inp.setAttribute('spellcheck', 'false');
+  inp.placeholder = sectionId.includes('Cpt') ? 'e.g. 99213' : 'e.g. E11.9';
+  inp.setAttribute('data-section', sectionId);
+  // Enforce max 5 chars for CPT fields
+  if (sectionId.includes('Cpt')) {
+    inp.setAttribute('maxlength', '5');
+    inp.addEventListener('input', function() {
+      const v = this.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 5);
+      this.value = v;
+    });
+  }
+  inp.addEventListener('keydown', e => handleKey(e, sectionId));
+  return inp;
+}
+
+/* ── Tag Management (Left Column) ── */
+function addTag(sectionId, val) {
+  const v = val.trim().toUpperCase();
+  if (!v) return;
+  if (tags[sectionId].includes(v)) { showToast('⚠ ' + v + ' already added'); return; }
+  tags[sectionId].push(v);
+  renderTags(sectionId);
+}
+
+function removeTag(sectionId, val) {
+  tags[sectionId] = tags[sectionId].filter(t => t !== val);
+  renderTags(sectionId);
+}
+
+function renderTags(sectionId) {
+  const area = document.getElementById('area-' + sectionId);
+  area.innerHTML = '';
+  const isAdd = sectionId.startsWith('add');
+  
+  tags[sectionId].forEach(v => {
+    const span = document.createElement('span');
+    span.className = 'tag ' + (isAdd ? 'tag-add' : 'tag-rem');
+    span.textContent = v;
+    
+    const btn = document.createElement('button');
+    btn.className = 'tag-btn'; btn.innerHTML = '&times;'; btn.type = 'button';
+    btn.onclick = (e) => { e.stopPropagation(); removeTag(sectionId, v); };
+    
+    span.appendChild(btn);
+    area.appendChild(span);
+  });
+  
+  const inp = makeInput(sectionId);
+  area.appendChild(inp);
+}
+
+function handleKey(e, sectionId) {
+  const val = e.target.value.trim().toUpperCase();
+  
+  // User hits Tab -> Add tag, keep focus here to type next tag
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    if (val) {
+      // Strict CPT validation constraint
+      if (sectionId.includes('Cpt') && val.length !== 5) {
+        showToast('⚠ CPT codes must be exactly 5 characters [2]');
+        triggerErrorGlow(e.target);
+        return;
+      }
+      addTag(sectionId, val);
+    } else {
+      e.target.value = ''; // Clean empty spaces
+    }
+    
+    // Restore focus safely
+    setTimeout(() => { focusInput(document.getElementById('area-' + sectionId).parentElement); }, 10);
+  } 
+  // User hits Enter -> Add tag (if any), move to NEXT field
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (val) {
+      // Strict CPT validation constraint
+      if (sectionId.includes('Cpt') && val.length !== 5) {
+        showToast('⚠ CPT codes must be exactly 5 characters [2]');
+        triggerErrorGlow(e.target);
+        return;
+      }
+      addTag(sectionId, val);
+    }
+    
+    const idx = SECTIONS.indexOf(sectionId);
+    if (idx < SECTIONS.length - 1) {
+      setTimeout(() => {
+        // Find the input-body wrapper for the next element and focus it
+        const nextAreaWrapper = document.getElementById('area-' + SECTIONS[idx + 1]).parentElement;
+        const nextInp = nextAreaWrapper.querySelector('.ghost-input');
+        if (nextInp) safeFocus(nextInp);
+      }, 10);
+    } else {
+      // Move to first Mapping row
+      focusMapRow();
+    }
+  } 
+  // User hits Backspace on empty input -> Remove last tag
+  else if (e.key === 'Backspace' && !val) {
+    if (tags[sectionId].length) removeTag(sectionId, tags[sectionId][tags[sectionId].length - 1]);
+    setTimeout(() => { focusInput(document.getElementById('area-' + sectionId).parentElement); }, 10);
+  }
+}
+
+/* ── Mapping Rows: CPT -> DX (Right Column) ── */
+function addMapRow(focusIt = false) {
+  const id = ++rowCounter;
+  mapRows.push({ id, cpt: '', dxs: [] });
+  renderMapRows();
+  if (focusIt) {
+    setTimeout(() => {
+      const inp = document.querySelector(`[data-map-cpt="${id}"]`);
+      if (inp) safeFocus(inp);
+    }, 20);
+  }
+}
+
+function renderMapRows() {
+  const cont = document.getElementById('mapRows');
+  cont.innerHTML = '';
+  mapRows.forEach((row, idx) => {
+    const div = document.createElement('div');
+    div.className = 'map-row';
+
+    /* CPT Pill */
+    const cptBox = document.createElement('div');
+    cptBox.className = 'pill-wrap pill-cpt';
+    cptBox.onclick = () => { cptBox.querySelector('.ghost-input')?.focus(); };
+    const cptInp = document.createElement('input');
+    cptInp.type = 'text'; cptInp.className = 'ghost-input';
+    cptInp.setAttribute('autocomplete', 'off');
+    cptInp.setAttribute('spellcheck', 'false');
+    cptInp.placeholder = 'CPT'; cptInp.value = row.cpt;
+    cptInp.setAttribute('data-map-cpt', row.id);
+    cptInp.setAttribute('maxlength', '5');
+    cptInp.addEventListener('input', e => {
+      const v = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 5);
+      e.target.value = v;
+      row.cpt = v;
+    });
+    cptInp.addEventListener('keydown', e => {
+      if (e.key === 'Tab' || e.key === 'Enter') {
+        const val = cptInp.value.trim();
+        // Strict CPT validation constraint
+        if (val.length !== 5) {
+          e.preventDefault();
+          showToast('⚠ CPT codes must be exactly 5 characters [2]');
+          triggerErrorGlow(cptInp);
+          return;
+        }
+        e.preventDefault();
+        setTimeout(() => { safeFocus(document.querySelector(`[data-map-dx="${row.id}"]`)); }, 10);
+      }
+    });
+    cptBox.appendChild(cptInp);
+
+    /* Arrow */
+    const arrow = document.createElement('div');
+    arrow.className = 'map-arrow'; arrow.innerHTML = '&rarr;';
+
+    /* DX Pill */
+    const dxBox = document.createElement('div');
+    dxBox.className = 'pill-wrap pill-dx';
+    dxBox.onclick = () => { dxBox.querySelector('.ghost-input')?.focus(); };
+    
+    row.dxs.forEach(v => {
+      const t = document.createElement('span');
+      t.className = 'dx-tag'; t.textContent = v;
+      const rb = document.createElement('button');
+      rb.className = 'tag-btn'; rb.innerHTML = '&times;'; rb.type = 'button';
+      rb.onclick = (e) => {
+        e.stopPropagation(); row.dxs = row.dxs.filter(d => d !== v); renderMapRows();
+        setTimeout(() => { safeFocus(document.querySelector(`[data-map-dx="${row.id}"]`)); }, 10);
+      };
+      t.appendChild(rb); dxBox.appendChild(t);
+    });
+
+    const dxInp = document.createElement('input');
+    dxInp.type = 'text'; dxInp.className = 'ghost-input';
+    dxInp.setAttribute('autocomplete', 'off');
+    dxInp.setAttribute('spellcheck', 'false');
+    dxInp.placeholder = 'DX Codes...';
+    dxInp.setAttribute('data-map-dx', row.id);
+    dxInp.addEventListener('keydown', e => {
+      const val = dxInp.value.trim().toUpperCase();
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        if (val) {
+          row.dxs.push(val); renderMapRows();
+          setTimeout(() => { safeFocus(document.querySelector(`[data-map-dx="${row.id}"]`)); }, 10);
+        } else {
+          // If CPT is filled but no DX tags added yet, block advancement
+          if (row.cpt && row.dxs.length === 0) {
+            showToast('⚠ Please add at least one DX code for CPT ' + row.cpt);
+            triggerErrorGlow(dxInp);
+            return;
+          }
+          // Tab on empty moves to next row or creates one
+          const next = mapRows[idx + 1];
+          if (next) setTimeout(() => { safeFocus(document.querySelector(`[data-map-cpt="${next.id}"]`)); }, 10);
+          else addMapRow(true);
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (val) {
+          row.dxs.push(val); renderMapRows();
+          const next = mapRows[idx + 1];
+          if (next) setTimeout(() => { safeFocus(document.querySelector(`[data-map-cpt="${next.id}"]`)); }, 10);
+          else addModMapRow(true);
+        } else {
+          // If CPT is filled but no DX tags added yet, block advancement
+          if (row.cpt && row.dxs.length === 0) {
+            showToast('⚠ Please add at least one DX code for CPT ' + row.cpt);
+            triggerErrorGlow(dxInp);
+            return;
+          }
+          const next = mapRows[idx + 1];
+          if (next) setTimeout(() => { safeFocus(document.querySelector(`[data-map-cpt="${next.id}"]`)); }, 10);
+          else focusModMapRow();
+        }
+      } else if (e.key === 'Backspace' && !val) {
+        if (row.dxs.length) {
+          row.dxs.pop(); renderMapRows();
+          setTimeout(() => { safeFocus(document.querySelector(`[data-map-dx="${row.id}"]`)); }, 10);
+        }
+      }
+    });
+    dxBox.appendChild(dxInp);
+
+    /* Delete Row Button */
+    const del = document.createElement('button');
+    del.className = 'del-row-btn'; del.innerHTML = '&times;';
+    del.onclick = () => { mapRows = mapRows.filter(r => r.id !== row.id); renderMapRows(); };
+
+    div.appendChild(cptBox); div.appendChild(arrow);
+    div.appendChild(dxBox); div.appendChild(del);
+    cont.appendChild(div);
+  });
+}
+
+function focusMapRow() {
+  if (mapRows.length === 0) addMapRow(true);
+  else {
+    const inp = document.querySelector(`[data-map-cpt="${mapRows[0].id}"]`);
+    if (inp) safeFocus(inp);
+  }
+}
+
+/* ── Mapping Rows: CPT -> MOD (Right Column) ── */
+function addModMapRow(focusIt = false) {
+  const id = ++rowCounter;
+  modMapRows.push({ id, cpt: '', mods: [] });
+  renderModMapRows();
+  if (focusIt) {
+    setTimeout(() => {
+      const inp = document.querySelector(`[data-modmap-cpt="${id}"]`);
+      if (inp) safeFocus(inp);
+    }, 20);
+  }
+}
+
+function renderModMapRows() {
+  const cont = document.getElementById('modMapRows');
+  cont.innerHTML = '';
+  modMapRows.forEach((row, idx) => {
+    const div = document.createElement('div');
+    div.className = 'map-row';
+
+    /* CPT Pill */
+    const cptBox = document.createElement('div');
+    cptBox.className = 'pill-wrap pill-cpt';
+    cptBox.onclick = () => { cptBox.querySelector('.ghost-input')?.focus(); };
+    const cptInp = document.createElement('input');
+    cptInp.type = 'text'; cptInp.className = 'ghost-input';
+    cptInp.setAttribute('autocomplete', 'off');
+    cptInp.setAttribute('spellcheck', 'false');
+    cptInp.placeholder = 'CPT'; cptInp.value = row.cpt;
+    cptInp.setAttribute('data-modmap-cpt', row.id);
+    cptInp.setAttribute('maxlength', '5');
+    cptInp.addEventListener('input', e => {
+      const v = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 5);
+      e.target.value = v;
+      row.cpt = v;
+    });
+    cptInp.addEventListener('keydown', e => {
+      if (e.key === 'Tab' || e.key === 'Enter') {
+        const val = cptInp.value.trim();
+        // Strict CPT validation constraint
+        if (val.length !== 5) {
+          e.preventDefault();
+          showToast('⚠ CPT codes must be exactly 5 characters [2]');
+          triggerErrorGlow(cptInp);
+          return;
+        }
+        e.preventDefault();
+        setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-mod="${row.id}"]`)); }, 10);
+      }
+    });
+    cptBox.appendChild(cptInp);
+
+    /* Arrow */
+    const arrow = document.createElement('div');
+    arrow.className = 'map-arrow arrow-mod'; arrow.innerHTML = '&rarr;';
+
+    /* Mod Pill */
+    const modBox = document.createElement('div');
+    modBox.className = 'pill-wrap pill-dx mod-focus';
+    modBox.onclick = () => { modBox.querySelector('.ghost-input')?.focus(); };
+    
+    row.mods.forEach(v => {
+      const t = document.createElement('span');
+      t.className = 'dx-tag mod-tag'; t.textContent = v;
+      const rb = document.createElement('button');
+      rb.className = 'tag-btn'; rb.innerHTML = '&times;'; rb.type = 'button';
+      rb.onclick = (e) => {
+        e.stopPropagation(); row.mods = row.mods.filter(m => m !== v); renderModMapRows();
+        setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-mod="${row.id}"]`)); }, 10);
+      };
+      t.appendChild(rb); modBox.appendChild(t);
+    });
+
+    const modInp = document.createElement('input');
+    modInp.type = 'text'; modInp.className = 'ghost-input';
+    modInp.setAttribute('autocomplete', 'off');
+    modInp.setAttribute('spellcheck', 'false');
+    modInp.placeholder = 'Modifiers...';
+    modInp.setAttribute('data-modmap-mod', row.id);
+    modInp.addEventListener('keydown', e => {
+      const val = modInp.value.trim().toUpperCase();
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        if (val) {
+          // Strict Modifier Validation Constraint (Must be exactly 2 characters)
+          if (val.length !== 2) {
+            showToast('⚠ Modifier must be exactly 2 characters');
+            triggerErrorGlow(modInp);
+            return;
+          }
+          if (!row.mods.includes(val)) row.mods.push(val);
+          renderModMapRows();
+          setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-mod="${row.id}"]`)); }, 10);
+        } else {
+          // If CPT is filled but no modifiers added yet, block advancement
+          if (row.cpt && row.mods.length === 0) {
+            showToast('⚠ Please add at least one Modifier for CPT ' + row.cpt);
+            triggerErrorGlow(modInp);
+            return;
+          }
+          const next = modMapRows[idx + 1];
+          if (next) setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-cpt="${next.id}"]`)); }, 10);
+          else addModMapRow(true);
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (val) {
+          // Strict Modifier Validation Constraint (Must be exactly 2 characters)
+          if (val.length !== 2) {
+            showToast('⚠ Modifier must be exactly 2 characters');
+            triggerErrorGlow(modInp);
+            return;
+          }
+          if (!row.mods.includes(val)) row.mods.push(val);
+          renderModMapRows();
+          const next = modMapRows[idx + 1];
+          if (next) setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-cpt="${next.id}"]`)); }, 10);
+          else generateNote(); // Auto gen if at the end
+        } else {
+          // If CPT is filled but no modifiers added yet, block advancement
+          if (row.cpt && row.mods.length === 0) {
+            showToast('⚠ Please add at least one Modifier for CPT ' + row.cpt);
+            triggerErrorGlow(modInp);
+            return;
+          }
+          const next = modMapRows[idx + 1];
+          if (next) setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-cpt="${next.id}"]`)); }, 10);
+          else generateNote();
+        }
+      } else if (e.key === 'Backspace' && !val) {
+        if (row.mods.length) {
+          row.mods.pop(); renderModMapRows();
+          setTimeout(() => { safeFocus(document.querySelector(`[data-modmap-mod="${row.id}"]`)); }, 10);
+        }
+      }
+    });
+    modBox.appendChild(modInp);
+
+    /* Delete Row Button */
+    const del = document.createElement('button');
+    del.className = 'del-row-btn'; del.innerHTML = '&times;';
+    del.onclick = () => { modMapRows = modMapRows.filter(r => r.id !== row.id); renderModMapRows(); };
+
+    div.appendChild(cptBox); div.appendChild(arrow);
+    div.appendChild(modBox); div.appendChild(del);
+    cont.appendChild(div);
+  });
+}
+
+function focusModMapRow() {
+  if (modMapRows.length === 0) addModMapRow(true);
+  else {
+    const inp = document.querySelector(`[data-modmap-cpt="${modMapRows[0].id}"]`);
+    if (inp) safeFocus(inp);
+  }
+}
+
+/* ── Note Generation ── */
+function generateNote() {
+  const parts = ['As per MR review'];
+  if (tags.addDx.length) parts.push('ADD DX [' + tags.addDx.join(', ') + ']');
+  if (tags.removeDx.length) parts.push('REMOVE DX [' + tags.removeDx.join(', ') + ']');
+  if (tags.addCpt.length) parts.push('ADD CPT [' + tags.addCpt.join(', ') + ']');
+  if (tags.removeCpt.length) parts.push('REMOVE CPT [' + tags.removeCpt.join(', ') + ']');
+
+  const validMaps = mapRows.filter(r => r.cpt && r.dxs.length);
+  if (validMaps.length) {
+    const mapStr = validMaps.map(r => r.cpt + '→' + r.dxs.join(',')).join('; ');
+    parts.push('MAPPING CPT→DX ' + mapStr);
+  }
+
+  const validModMaps = modMapRows.filter(r => r.cpt && r.mods.length);
+  if (validModMaps.length) {
+    const modStr = validModMaps.map(r => r.cpt + '→' + r.mods.join(',')).join('; ');
+    parts.push('MAPPING CPT→MOD ' + modStr);
+  }
+
+  if (parts.length === 1) { showToast('⚠ Please enter at least one code to generate'); return; }
+  
+  const output = document.getElementById('noteOutput');
+  output.value = parts.join(', ') + '.';
+  showToast('⚡ Note Generated successfully');
+  
+  // Flash note box
+  output.style.borderColor = 'var(--orange)';
+  output.style.boxShadow = '0 0 0 4px rgba(245, 158, 11, 0.2)';
+  setTimeout(() => {
+    output.style.borderColor = '';
+    output.style.boxShadow = '';
+  }, 800);
+}
+
+function copyAndClear() {
+  const note = document.getElementById('noteOutput').value;
+  if (!note) { showToast('⚠ Generate a note first'); return; }
+  navigator.clipboard.writeText(note).then(() => {
+    showToast('📋 Copied to clipboard! Board Cleared.'); clearAll();
+  }).catch(() => {
+    document.getElementById('noteOutput').select();
+    document.execCommand('copy');
+    showToast('📋 Copied! Board Cleared.'); clearAll();
+  });
+}
+
+function clearAll() {
+  SECTIONS.forEach(s => { tags[s] = []; renderTags(s); });
+  mapRows = []; renderMapRows();
+  modMapRows = []; renderModMapRows();
+  document.getElementById('noteOutput').value = '';
+  addMapRow(); addModMapRow();
+  showToast('✕ Board cleared');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._to);
+  t._to = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ── Shortcuts Keydown ── */
+document.addEventListener('keydown', function(e) {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if (ctrl && !e.shiftKey && e.key.toLowerCase() === 'g') {
+    e.preventDefault(); generateNote();
+  }
+  if (ctrl && e.shiftKey && e.key.toLowerCase() === 'c') {
+    e.preventDefault(); copyAndClear();
+  }
+});
+
+/* ── DateTime Display & SVG Analog Clock ── */
+(function() {
+  const cx = 100, cy = 100;
+
+  // Build tick marks & numbers once
+  const ticksG = document.getElementById('svgTicks');
+  const numsG = document.getElementById('svgNumbers');
+  const ns = 'http://www.w3.org/2000/svg';
+
+  for (let i = 0; i < 60; i++) {
+    const angle = (i * 6 - 90) * Math.PI / 180;
+    const isHour = i % 5 === 0;
+    const r1 = isHour ? 78 : 83;
+    const r2 = 88;
+    const x1 = cx + r1 * Math.cos(angle);
+    const y1 = cy + r1 * Math.sin(angle);
+    const x2 = cx + r2 * Math.cos(angle);
+    const y2 = cy + r2 * Math.sin(angle);
+    const line = document.createElementNS(ns, 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke-width', isHour ? '2.5' : '1');
+    line.setAttribute('class', isHour ? 'svg-tick-hour' : 'svg-tick-min');
+    ticksG.appendChild(line);
+  }
+
+  // Hour numbers 1–12
+  const numR = 68;
+  for (let h = 1; h <= 12; h++) {
+    const angle = (h * 30 - 90) * Math.PI / 180;
+    const x = cx + numR * Math.cos(angle);
+    const y = cy + numR * Math.sin(angle);
+    const t = document.createElementNS(ns, 'text');
+    t.setAttribute('x', x); t.setAttribute('y', y);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('dominant-baseline', 'central');
+    t.setAttribute('font-size', h === 12 || h === 6 || h === 3 || h === 9 ? '13' : '11');
+    t.setAttribute('font-weight', h === 12 || h === 6 || h === 3 || h === 9 ? '700' : '600');
+    t.setAttribute('font-family', "Outfit, sans-serif");
+    t.setAttribute('class', 'svg-num');
+    t.textContent = h;
+    numsG.appendChild(t);
+  }
+
+  function polarToXY(angleDeg, radius) {
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+  }
+
+  function setLine(id, angleDeg, len, tail) {
+    const el = document.getElementById(id);
+    const tip = polarToXY(angleDeg, len);
+    const base = polarToXY(angleDeg + 180, tail || 0);
+    el.setAttribute('x1', base.x); el.setAttribute('y1', base.y);
+    el.setAttribute('x2', tip.x); el.setAttribute('y2', tip.y);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    // Date/time text
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dateStr = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ' ' + now.getFullYear();
+    let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    const timeStr = h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + ' ' + ampm;
+    document.getElementById('dtDate').textContent = dateStr;
+    document.getElementById('dtTime').textContent = timeStr;
+
+    // SVG hands
+    const secDeg = s * 6;
+    const minDeg = m * 6 + s * 0.1;
+    const hourDeg = (now.getHours() % 12) * 30 + m * 0.5;
+    setLine('svgHour', hourDeg, 56, 14);
+    setLine('svgMinute', minDeg, 70, 16);
+    setLine('svgSecond', secDeg, 74, 18);
+
+    // Re-apply CSS var colors each tick (handles theme switching)
+    const style = getComputedStyle(document.body);
+    const textMain = style.getPropertyValue('--text-main').trim();
+    const brandBlue = style.getPropertyValue('--brand-blue').trim();
+    const red = style.getPropertyValue('--red').trim();
+    const cardBg = style.getPropertyValue('--card-bg').trim();
+    const border = style.getPropertyValue('--border-light').trim();
+    const textMuted = style.getPropertyValue('--text-muted').trim();
+
+    document.querySelectorAll('.svg-border').forEach(e => e.setAttribute('stroke', border));
+    document.querySelectorAll('.svg-face').forEach(e => e.setAttribute('fill', cardBg));
+    document.querySelectorAll('.svg-inner-ring').forEach(e => e.setAttribute('stroke', border));
+    document.querySelectorAll('.svg-tick-hour').forEach(e => e.setAttribute('stroke', textMain));
+    document.querySelectorAll('.svg-tick-min').forEach(e => e.setAttribute('stroke', border));
+    document.querySelectorAll('.svg-num').forEach(e => e.setAttribute('fill', textMain));
+    document.getElementById('svgHour').setAttribute('stroke', textMain);
+    document.getElementById('svgMinute').setAttribute('stroke', brandBlue);
+    document.getElementById('svgSecond').setAttribute('stroke', red);
+    document.querySelectorAll('.svg-center-outer').forEach(e => e.setAttribute('fill', brandBlue));
+    document.querySelectorAll('.svg-center-inner').forEach(e => e.setAttribute('fill', cardBg));
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+})();
+
+/* ── Init ── */
+SECTIONS.forEach(s => renderTags(s));
+addMapRow();
+addModMapRow();
+
+// Load saved theme or fall back to light
+const savedTheme = localStorage.getItem('mw-coding-tool-theme') || 'light';
+setTheme(savedTheme);
+
+// Set initial focus
+setTimeout(() => focusInput(document.getElementById('area-addDx').parentElement), 100);
+</script>
+</body>
+</html>
