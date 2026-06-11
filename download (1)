@@ -1,0 +1,46 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+export interface MedicalCode {
+  code: string;
+  description: string;
+}
+
+export const COMMON_DX: MedicalCode[] = [
+  { code: 'M54.50', description: 'Low back pain, unspecified' },
+  { code: 'I10', description: 'Essential hypertension' },
+  { code: 'E11.9', description: 'Type 2 diabetes mellitus' },
+  { code: 'J06.9', description: 'Acute upper respiratory infection' },
+  { code: 'Z00.00', description: 'Encounter for general adult health exam' },
+  { code: 'G47.00', description: 'Insomnia, unspecified' },
+  { code: 'F41.1', description: 'Generalized anxiety disorder' },
+  { code: 'M25.561', description: 'Pain in right knee' },
+  { code: 'N39.0', description: 'Urinary tract infection, site unspecified' },
+  { code: 'M79.1', description: 'Myalgia (muscle pain)' },
+  { code: 'K21.9', description: 'Gero-esophageal reflux disease (GERD)' }
+];
+
+export const COMMON_CPT: MedicalCode[] = [
+  { code: '99213', description: 'Office visit, established, 15 min' },
+  { code: '99214', description: 'Office visit, established, 25 min' },
+  { code: '99203', description: 'Office visit, new patient, 30 min' },
+  { code: '99204', description: 'Office visit, new patient, 45 min' },
+  { code: '36415', description: 'Venipuncture blood draw' },
+  { code: '99215', description: 'Office visit, established, 40 min' },
+  { code: '93000', description: 'Electrocardiogram (ECG) report' },
+  { code: '10060', description: 'Drainage of skin abscess/cyst' },
+  { code: '99396', description: 'Preventive visit, established, 40-64 yrs' },
+  { code: '90471', description: 'Immunization administration' }
+];
+
+export const COMMON_MODIFIERS: MedicalCode[] = [
+  { code: '25', description: 'Significant separate E/M service' },
+  { code: '59', description: 'Distinct procedural service' },
+  { code: 'LT', description: 'Left side (anatomical)' },
+  { code: 'RT', description: 'Right side (anatomical)' },
+  { code: '50', description: 'Bilateral procedure' },
+  { code: '51', description: 'Multiple procedures' },
+  { code: '26', description: 'Professional component' }
+];
